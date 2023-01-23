@@ -6,7 +6,7 @@ import * as olProj from 'ol/proj';
 import OSM from 'ol/source/OSM';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
 import VectorSource from 'ol/source/Vector';
-import {Circle, Point} from 'ol/geom.js';
+import {Point} from 'ol/geom.js';
 import { TripGetter } from './interface';
 
 const VSource = new VectorSource({features:[]})

@@ -1,51 +1,13 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
 
 const API = ''
-const LIST_OF_TRIPS_EXAMPLE = [
-    {
-        trip_id: 0,
-        trip_start_time:1674433704046,
-        trip_end_time:1674433714046  
-    },
-    {
-        trip_id: 1,
-        trip_start_time:1674433804046,
-        trip_end_time:1674433913046  
-    },
-    {
-        trip_id: 2,
-        trip_start_time:1674434104046,
-        trip_end_time:  1674434733046  
-    }
-]
-const TRIP_EXAMPLE = {
-    trip_id:0,
-    trip:[
-        {
-            coordinates: [44.26408,-123.16058],
-            time:1674433704046,
-        },
-        {
-            coordinates:[44.26793,-123.16486],
-            time:1674433706046,
-        },
-        {
-            coordinates:[44.27227,-123.16617],
-            time:1674433710046,
-        },
-        {
-            coordinates:[44.27365,-123.15951],
-            time:1674433714046,
-        },
-    ]
-}
 const TARGET = 'trip_selector';
 
 
 /** 
 * Creates an array of HTML Elements that contains the trip date, time, and duration  
 */
-const htmlifyData  = (tripList) => tripList.map((current) =>{
+const createListElement  = (tripList) => tripList.map((current) =>{
     let startDate = new Date(current.trip_start_time)
     let endDate = new Date(current.trip_end_time)
     
@@ -61,7 +23,7 @@ const htmlifyData  = (tripList) => tripList.map((current) =>{
 
 
 /** 
-* Creates empty divs with id of the trip coordinate id (index) and the localeTimeStr as the title 
+* Creates empty divs with id of the trip coordinate id (index) exact id = `id:index` and the localeTimeStr as the title 
 * accepts Data like in the `TRIP_EXAMPLE`
 *
 * Used for hover over effect. The title is the text displayed.
@@ -100,7 +62,7 @@ class TripGetter {
     async getTrips(){
         // create a get request, store the response in trips variable and return
         this.trips = LIST_OF_TRIPS_EXAMPLE; 
-        this.tripElements = htmlifyData(this.trips)
+        this.tripElements = createListElement(this.trips)
         this.showTrips();
         return this.tripElements;
     }

@@ -1,0 +1,19 @@
+{
+ "trips":[
+        {
+            "trip_id": 0,
+            "trip_start_time":1674433704046,
+            "trip_end_time":1674433714046  
+        },
+        {
+            "trip_id": 1,
+            "trip_start_time":1674433804046,
+            "trip_end_time":1674433913046  
+        },
+        {
+            "trip_id": 2,
+            "trip_start_time":1674434104046,
+            "trip_end_time":  1674434733046  
+        }
+    ]
+}

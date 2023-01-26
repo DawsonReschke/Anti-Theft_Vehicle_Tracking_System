@@ -1,10 +1,12 @@
 const express = require('express'); 
-const routes = require('./routes')
-const notFound = require('./middlewares/notFoundMiddleWare')
+const routes = require('./routes');
+const notFound = require('./middlewares/notFoundMiddleWare');
+const errorHandler = require('./middlewares/errorHandlerMiddleWare');
 
 const app = express(); 
-app.use(routes)
-app.use(notFound)
+app.use(routes);
+app.use(errorHandler);
+app.use(notFound);
 
 
 

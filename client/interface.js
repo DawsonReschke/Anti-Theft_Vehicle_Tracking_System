@@ -1,6 +1,5 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
 
-const API = process.env.API_URL;
 const TARGET = 'trip_selector';
 const LIST_OF_TRIPS_EXAMPLE = [
            {

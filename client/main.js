@@ -1,4 +1,3 @@
-const home = [-123.16058,44.26408]
 import './style.css';
 import {Feature, Map, View} from 'ol';
 import Overlay from 'ol/Overlay.js';

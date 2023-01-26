@@ -1,7 +1,7 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
 const API_URL = '0.0.0.0:1337'
 const GET_EXAMPLE_TRIPS = '/location/trips/example'
-const GET_EXAMPLE_TRIP = '/location/trip/0'
+const GET_TRIP = '/location/trip/'
 const TARGET = 'trip_selector';
 const LIST_OF_TRIPS_EXAMPLE = [
            {
@@ -69,7 +69,7 @@ const createListElement  = (tripList) => tripList.map((current) =>{
 * This data is stored in the hoverOverDivs var
 */
 const createTitledDivs = (tripInfo) => 
-    tripInfo.trip.map(({time},index) =>{
+    tripInfo.locations.map(({time},index) =>{
         let div = document.createElement('div'); 
         div.setAttribute('title',new Date(time).toLocaleTimeString())
         div.setAttribute('id',"id:"+index);
@@ -79,7 +79,6 @@ const createTitledDivs = (tripInfo) =>
     })
 
 const removeTitledDivs = (titledDivs) => titledDivs.forEach(div => div.remove()); 
-
 
 /** 
 * @class TripGetter
@@ -100,8 +99,10 @@ class TripGetter {
     
     async getTrips(){
         // create a get request, store the response in trips variable and return
-        this.trips = LIST_OF_TRIPS_EXAMPLE; 
-        this.tripElements = createListElement(this.trips)
+        // this.trips = LIST_OF_TRIPS_EXAMPLE; 
+        let response = await fetch(GET_EXAMPLE_TRIPS);
+        let data = await response.json();
+        this.tripElements = createListElement(data.trips)
         this.showTrips();
         return this.tripElements;
     }
@@ -111,11 +112,11 @@ class TripGetter {
     */
     async getTripInfo(trip_id){
         // create a get request, store the trip info in currentTrip variable and return
-        removeTitledDivs(this.hoverOverDivs); 
-        this.currentTrip = TRIP_EXAMPLE;
-        console.log(this.hoverOverDivs)
+        removeTitledDivs(this.hoverOverDivs);
+        let response = await fetch(GET_TRIP+trip_id);
+        let data = await response.json();
+        this.currentTrip = data;
         this.hoverOverDivs = createTitledDivs(this.currentTrip);
-        console.log(this.hoverOverDivs)
         this.hoverOverDivs.forEach(div => document.getElementsByTagName('body')[0].appendChild(div)); 
         return this.currentTrip; 
     }

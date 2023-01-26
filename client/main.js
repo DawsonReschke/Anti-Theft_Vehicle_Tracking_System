@@ -55,8 +55,9 @@ async function loadTrips(tripElements){
     VSource.clear(); 
     removeOverlays(); 
     currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
-    currentTrip.trip.forEach((current,index) => createOverLay(current.coordinates,index))
-    let features = createPointArray(currentTrip.trip); 
+    console.log('current trip',currentTrip)
+    currentTrip.locations.forEach((current,index) => createOverLay(current.coordinates,index))
+    let features = createPointArray(currentTrip.locations); 
     VSource.addFeatures(features); 
   }))
 }

@@ -47,15 +47,19 @@ function createOverLay(coordinates, index){
 }
 
 let currentTrip = {}; 
-let tripElements = await TGetter.getTrips();
-tripElements.forEach(async (current) => current.addEventListener('click',async ()=>{
-  VSource.clear(); 
-  removeOverlays(); 
-  currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
-  currentTrip.trip.forEach((current,index) => createOverLay(current.coordinates,index))
-  let features = createPointArray(currentTrip.trip); 
-  VSource.addFeatures(features); 
-}))
+// let tripElements = await TGetter.getTrips();
+TGetter.getTrips().then(trips => loadTrips(trips))
+
+async function loadTrips(tripElements){
+  tripElements.forEach(async (current) => current.addEventListener('click',async ()=>{
+    VSource.clear(); 
+    removeOverlays(); 
+    currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
+    currentTrip.trip.forEach((current,index) => createOverLay(current.coordinates,index))
+    let features = createPointArray(currentTrip.trip); 
+    VSource.addFeatures(features); 
+  }))
+}
 
 // const home = [44.26408,-123.16058]
 

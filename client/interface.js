@@ -1,5 +1,7 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
-
+const API_URL = '0.0.0.0:1337'
+const GET_EXAMPLE_TRIPS = '/location/trips/example'
+const GET_EXAMPLE_TRIP = '/location/trip/0'
 const TARGET = 'trip_selector';
 const LIST_OF_TRIPS_EXAMPLE = [
            {

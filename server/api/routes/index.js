@@ -5,7 +5,7 @@ const router = express.Router();
 /** 
 * Import all of the routes 
 */
-const location = require('./location/locationRouter')
+const location = require('./trip/tripRouter')
 
 /** 
 * Use all of the routes 

@@ -5,6 +5,8 @@ const notFound = require('./middlewares/notFoundMiddleWare');
 const errorHandler = require('./middlewares/errorHandlerMiddleWare');
 
 const app = express(); 
+
+app.use(express.text({type(req){return true}}))
 app.use('/api',routes);
 
 /** 

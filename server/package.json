@@ -5,15 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "knex":"npx knex --knexfile config/knexfile.js",
-    "migrate":"knex migrate:latest --knexfile config/knexfile.js",
-    "rollback":"knex migrate:rollback --knexfile config/knexfile.js",
-    "seed":"knex seed:run --knexfile config/knexfile.js"
+    "knex": "npx knex --knexfile config/knexfile.js",
+    "migrate": "knex migrate:latest --knexfile config/knexfile.js",
+    "rollback": "knex migrate:rollback --knexfile config/knexfile.js",
+    "seed": "knex seed:run --knexfile config/knexfile.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "express": "^4.18.2",
     "knex": "^2.4.2",
     "pg": "^8.8.0"
   }

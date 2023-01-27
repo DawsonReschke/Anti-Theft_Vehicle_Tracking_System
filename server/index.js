@@ -1,3 +1,4 @@
+require('dotenv')
 const app = require('./api')
 const PORT = process.env.PORT | 1337
 app.listen(PORT,()=>{

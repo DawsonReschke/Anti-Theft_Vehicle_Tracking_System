@@ -22,7 +22,7 @@ const map = new Map({
     VLayer,
   ],
   view: new View({
-    center: olProj.fromLonLat(home),
+    center: [0,0],
     zoom: 3
   })
 });

@@ -75,7 +75,6 @@ class TripGetter {
         removeTitledDivs(this.hoverOverDivs);
         let response = await fetch(GET_TRIP+trip_id);
         let data = await response.json();
-        console.log('data', data)
         this.currentTrip = data;
         this.hoverOverDivs = createTitledDivs(this.currentTrip);
         this.hoverOverDivs.forEach(div => document.getElementsByTagName('body')[0].appendChild(div)); 

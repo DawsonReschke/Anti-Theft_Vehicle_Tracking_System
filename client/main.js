@@ -38,11 +38,13 @@ function removeOverlays(){
 const getLonLat = (coord) => olProj.transform(coord,'EPSG:4326', 'EPSG:3857');
 
 function setViewCenter(coordinates){
-  map.view.setCenter(getLonLat(coordinates))
+  map.setView(new View({
+    center:getLonLat(coordinates),
+    zoom:15
+  }))
 }
 
 function createOverLay(coordinates, index){
-  console.log(coordinates,index)
   map.addOverlay(new Overlay({
     position:olProj.fromLonLat([...coordinates].reverse()),
     positioning:'center-center',
@@ -61,7 +63,6 @@ async function loadTrips(tripElements){
     removeOverlays(); 
     currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
     setViewCenter([currentTrip.locations[0].longitude,currentTrip.locations[0].latitude])
-    console.log('current trip',currentTrip)
     currentTrip.locations.forEach((current,index) => createOverLay([current.latitude,current.longitude],index))
     let features = createPointArray(currentTrip.locations); 
     VSource.addFeatures(features); 

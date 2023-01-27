@@ -58,9 +58,11 @@ let currentTrip = {};
 TGetter.getTrips().then(trips => loadTrips(trips))
 
 async function loadTrips(tripElements){
-  tripElements.forEach(async (current) => current.addEventListener('click',async ()=>{
+  tripElements.forEach(async (current,index,arr) => current.addEventListener('click',async ()=>{
     VSource.clear(); 
     removeOverlays(); 
+    arr.forEach(element => element.classList.remove('active'))
+    current.classList.add('active')
     currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
     setViewCenter([currentTrip.locations[0].longitude,currentTrip.locations[0].latitude])
     currentTrip.locations.forEach((current,index) => createOverLay([current.latitude,current.longitude],index))

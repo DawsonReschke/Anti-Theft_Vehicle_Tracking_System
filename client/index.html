@@ -3,22 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="https://openlayers.org/favicon.ico" />
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPS tracker</title>
   </head>
   <body>
-    <style>
-      .marker{
-        width: 20px;
-        height: 20px;
-      }
-    </style>
     <script type="module" src="./interface.js"></script>
     <script type="module" src="./main.js"></script>
-    <div style="height: 500px; position: relative;">
-      <ul id="trip_selector" style="list-style-type: none;">
-      </ul>
+    <div class="list_container">
+      <ul id="trip_selector"></ul>
     </div>
-    <div style="height: 600px;position: relative;" id="map"></div>
+    <div id="map"></div>
   </body>
 </html>

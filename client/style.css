@@ -3,10 +3,56 @@
 html, body {
   margin: 0;
   height: 100%;
+  overflow-y: hidden;
 }
 #map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
+  position: relative;
+  margin: auto;
+  height: 60%;
+  width: 90%;
+}
+.marker{
+  width: 20px;
+  height: 20px;
+}
+#trip_selector{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style-type: none;
+  column-gap: 4%;
+  height:100%;
+}
+.list_container{
+  position: relative;
+  height: 30%;
+  margin: 2%;
+  border-style: dotted;
+  overflow: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
+}
+
+.list_container::-webkit-scrollbar {
+  display: none;
+}
+
+li{
+  border-radius: 20%;
+  display: block;
+  text-align: center;
+  width: 30%;
+  break-inside: avoid;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+}
+
+li:hover{
+  font-size: 20px;
+  background-color: rgb(243, 236, 236);
+}
+
+.active{
+  font-size: 20px;
+  background-color: rgb(232, 229, 229);
 }

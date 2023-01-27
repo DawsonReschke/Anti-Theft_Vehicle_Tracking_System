@@ -1,5 +1,5 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
-const GET_EXAMPLE_TRIPS = '/api/location/trips/example';
+const GET_EXAMPLE_TRIPS = '/api/location/trips/example_1';
 const GET_TRIP = '/api/location/trip/';
 const TARGET = 'trip_selector';
 
@@ -7,8 +7,8 @@ const TARGET = 'trip_selector';
 * Creates an array of HTML Elements that contains the trip date, time, and duration  
 */
 const createListElement  = (tripList) => tripList.map((current) =>{
-    let startDate = new Date(current.trip_start_time)
-    let endDate = new Date(current.trip_end_time)
+    let startDate = new Date(current.start_time)
+    let endDate = new Date(current.end_time)
     
     let list = document.createElement('li')
     list.setAttribute('id',current.trip_id)
@@ -32,9 +32,9 @@ const createTitledDivs = (tripInfo) =>
     tripInfo.locations.map(({time},index) =>{
         let div = document.createElement('div'); 
         div.setAttribute('title',new Date(time).toLocaleTimeString())
-        div.setAttribute('id',"id:"+index);
+        div.setAttribute('id','id:'+index);
         div.setAttribute('class','marker')
-        div.innerText = 'randomText'
+        div.innerText = index+1
         return div;  
     })
 
@@ -75,6 +75,7 @@ class TripGetter {
         removeTitledDivs(this.hoverOverDivs);
         let response = await fetch(GET_TRIP+trip_id);
         let data = await response.json();
+        console.log('data', data)
         this.currentTrip = data;
         this.hoverOverDivs = createTitledDivs(this.currentTrip);
         this.hoverOverDivs.forEach(div => document.getElementsByTagName('body')[0].appendChild(div)); 

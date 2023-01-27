@@ -6,7 +6,7 @@ import OSM from 'ol/source/OSM';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer.js';
 import VectorSource from 'ol/source/Vector';
 import {Point} from 'ol/geom.js';
-import { TripGetter } from './interface';
+import {TripGetter} from './interface';
 
 const VSource = new VectorSource({features:[]})
 const VLayer = new VectorLayer({source:VSource})
@@ -27,12 +27,18 @@ const map = new Map({
   })
 });
 
-
 /** 
 * Removes all overlays from the map (the hoverover markers) 
 */
 function removeOverlays(){
   map.getOverlays().clear()
+}
+
+// converts [lon,lat](EPSG:4326){GPS coord} -> (EPSG:3857){ what maps like Google Maps or OpenLayers use }
+const getLonLat = (coord) => olProj.transform(coord,'EPSG:4326', 'EPSG:3857');
+
+function setViewCenter(coordinates){
+  map.view.setCenter(getLonLat(coordinates))
 }
 
 function createOverLay(coordinates, index){
@@ -54,17 +60,13 @@ async function loadTrips(tripElements){
     VSource.clear(); 
     removeOverlays(); 
     currentTrip = await TGetter.getTripInfo(current.getAttribute('id'))
+    setViewCenter([currentTrip.locations[0].longitude,currentTrip.locations[0].latitude])
     console.log('current trip',currentTrip)
-    currentTrip.locations.forEach((current,index) => createOverLay(current.coordinates,index))
+    currentTrip.locations.forEach((current,index) => createOverLay([current.latitude,current.longitude],index))
     let features = createPointArray(currentTrip.locations); 
     VSource.addFeatures(features); 
   }))
 }
-
-// const home = [44.26408,-123.16058]
-
-// converts [lon,lat](EPSG:4326){GPS coord} -> (EPSG:3857){ what maps like Google Maps or OpenLayers use }
-const getLonLat = (coord) => olProj.transform(coord,'EPSG:4326', 'EPSG:3857');
 
 const createPoint = (coord) => new Feature({geometry:new Point(getLonLat(coord))})
 
@@ -73,5 +75,5 @@ const createPoint = (coord) => new Feature({geometry:new Point(getLonLat(coord))
 * returns an array of Point Features
 */
 function createPointArray(tripCoordinates){
-  return tripCoordinates.map(current => createPoint([...current.coordinates].reverse()))
+  return tripCoordinates.map(current => createPoint([current.longitude,current.latitude]))
 }

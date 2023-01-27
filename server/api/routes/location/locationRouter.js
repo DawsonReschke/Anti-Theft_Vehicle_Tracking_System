@@ -4,13 +4,6 @@ const model = require('./locationModel')
 const router = express.Router(); 
 
 /** 
-* Test Data 
-*/
-const EXAMPLE_TRIP = require('./trip.json')
-const EXAMPLE_TRIP_LIST = require('./tripList.json')
-
-
-/** 
 * GET /trips/:deviceID | returns a list of trips contained in the DB for the given deviceId
 */
 router.get('/trips/:deviceId',async(req,res,next) => {

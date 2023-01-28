@@ -50,19 +50,34 @@ function parseGPSString(str){
     }
 }
 
+/** 
+* It is very important for the request and response to be a small as possible to avoid data overages. 
+* To reduce the response size we can remove all of the headers *NOTE* (this is considered bad practice as many of these headers are required for HTTP requests)
+* With this method we can get the response size down to 20b which is very impressive over the default 200+b
+*/
+const removeHeadersMiddleware = (req,res,next) =>{
+    res.removeHeader("x-powered-by");
+    res.removeHeader("set-cookie");
+    res.removeHeader("Date");
+    res.removeHeader("Connection");
+    res.removeHeader('ETag')
+    res.removeHeader('Transfer-Encoding')
+    res.writeHead(200)
+    next(); 
+}
 
 /** 
 * POST /gps:deviceId | expected payload text: '{boolean}isNew,{bigInt}time,{float}lat,{float}long'
 * Adds to the database the GPS data from the payload.  
 */
-router.post('/gps/:deviceId',async (req,res,next)=>{
+router.post('/gps/:deviceId',removeHeadersMiddleware, async (req,res,next)=>{
     const device_id = req.params.deviceId; 
     const gpsData = parseGPSString(req.body);
     try {
         const inserted = await model.addPlot({...gpsData,device_id});
-        res.status(200).send('OK'); 
+        res.end(); 
     } catch (error) {
-        next({status:500,message:'an error has occurred'})
+        next({status:500,message:'an error has occurred',error})
     }
 })
 

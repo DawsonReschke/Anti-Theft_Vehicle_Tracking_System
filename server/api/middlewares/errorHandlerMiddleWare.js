@@ -1,5 +1,6 @@
 const NODE_ENV = process.env.NODE_ENV
 const errorHandlerMiddleWare = (error,req,res,next) => {
+    console.log('\x1b[31m',`${JSON.stringify(error.error)}`,'\x1b[0m')
     if(!error.status) {
         if(NODE_ENV === 'development'){
             res.status(500); 

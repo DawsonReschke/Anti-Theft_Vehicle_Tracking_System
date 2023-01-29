@@ -4,8 +4,12 @@ const model = require('./tripModel')
 const router = express.Router(); 
 
 /** 
-* GET /trips/:deviceID | returns a list of trips contained in the DB for the given deviceId
-*/
+ * Get a list of trips for a specific device.
+ * 
+ * @name Get Trips 
+ * @route {GET} /trips/:deviceId
+ * @routeparam {String} :deviceId is the unique identifier for the device to get trips for.
+ */
 router.get('/trips/:deviceId',async(req,res,next) => {
     const deviceId = req.params.deviceId; 
     let trips = await model.getTripsByDeviceId(deviceId); 
@@ -17,8 +21,11 @@ router.get('/trips/:deviceId',async(req,res,next) => {
 })
 
 /** 
-* GET /trip:tripId | returns a list of GPS data for a given trip  
-*/
+ * Get the entire list of GPS coordinates for a specific trip.
+ * 
+ * @route {GET} /trip/:tripId
+ * @routeparam {String} :tripId is the unique identifier for the trip.
+ */
 router.get('/trip/:tripId',async(req,res,next) => {
     const tripId = req.params.tripId;
     let trip = await model.getPlotsByTripId(tripId)
@@ -32,14 +39,21 @@ router.get('/trip/:tripId',async(req,res,next) => {
 })
 
 /** 
-* Parses a string in this format: {boolean},{bigInt},{float},{float}
-* returns {
-    isNew,
-    time,
-    latitude,
-    longitude
-}
-*/
+ * Important GPS data to be stored in the database.
+ * @typedef {Object} GpsData
+ * @property {Boolean} isNew Indicates whether the data being sent is part of an existing trip.
+ * @property {Date} time When the time was captured.
+ * @property {Number} latitude 
+ * @property {Number} longitude 
+ */
+
+/** 
+ * Parse GPS data from a string.
+ * Format of the string: `{Boolean},{Number},{Number},{Number}`.
+ * @function parseGPSString
+ * @param {String} str 
+ * @returns {GpsData} Returns a {@link GpsData} object
+ */
 function parseGPSString(str){
     const parsedString = str.split(','); 
     return{
@@ -50,11 +64,18 @@ function parseGPSString(str){
     }
 }
 
+
 /** 
-* It is very important for the request and response to be a small as possible to avoid data overages. 
-* To reduce the response size we can remove all of the headers *NOTE* (this is considered bad practice as many of these headers are required for HTTP requests)
-* With this method we can get the response size down to 20b which is very impressive over the default 200+b
-*/
+ * It is very important for the request and response to be as small as possible to avoid data overages.
+ * To reduce response size the headers can be removed.
+ * NOTE: this is BAD practice and should not be the final solution as some of these headers are required for HTTP responses
+ * With this method we reduce the response size from 200+ bytes to only 20 bytes.
+ * @function removeHeadersMiddleware
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {express.NextFunction} next
+ * @returns {Undefined}
+ */
 const removeHeadersMiddleware = (req,res,next) =>{
     res.removeHeader("x-powered-by");
     res.removeHeader("set-cookie");
@@ -70,6 +91,13 @@ const removeHeadersMiddleware = (req,res,next) =>{
 * POST /gps:deviceId | expected payload text: '{boolean}isNew,{bigInt}time,{float}lat,{float}long'
 * Adds to the database the GPS data from the payload.  
 */
+
+/** 
+ * 
+ * @route {POST} /gps/:deviceId
+ * @routeparam {String} :deviceId is the unique identifier for the posting device 
+ * @bodyparam {String} GpsData in the format `{Boolean} isNew, {Number} time, {Number} lat, {Number} long`
+ */
 router.post('/gps/:deviceId',removeHeadersMiddleware, async (req,res,next)=>{
     const device_id = req.params.deviceId; 
     const gpsData = parseGPSString(req.body);
@@ -80,13 +108,5 @@ router.post('/gps/:deviceId',removeHeadersMiddleware, async (req,res,next)=>{
         next({status:500,message:'an error has occurred',error})
     }
 })
-
-/** 
-* Sanity Check 
-*/
-router.get('/', async (req,res,next) => { 
-    res.json({message:'up'})
-})
-
 
 module.exports = router;

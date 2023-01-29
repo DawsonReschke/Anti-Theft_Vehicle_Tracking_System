@@ -1,8 +1,4 @@
-// Update with your config settings.
 require('dotenv').config('../.env')
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
 
 let connection = process.env.PG_CONNECTION_STRING || {
   host:'127.0.0.1',

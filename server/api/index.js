@@ -1,3 +1,8 @@
+/** 
+ * Routes
+ * @module routes
+ */
+
 const express = require('express'); 
 const path = require('path');
 const routes = require('./routes');
@@ -9,10 +14,14 @@ const app = express();
 app.use(express.text({type(req){return true}}))
 app.use('/api',routes);
 
+
 /** 
-* GET / route 
-* Serve static files for frontend
-*/
+ * Get index.html
+ * Serve static files 
+ * @name Base
+ * @path {GET} /
+ * @response Load Static Files
+ */
 app.use('/',express.static(path.join(__dirname,'../../client/dist')))
 
 app.use(errorHandler);

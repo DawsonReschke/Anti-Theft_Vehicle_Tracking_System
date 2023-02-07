@@ -1,15 +1,26 @@
+/** 
+ * Api
+ * @module routes/api
+ */
+
 const express = require('express'); 
 
 const router = express.Router(); 
 
-/** 
-* Import all of the routes 
-*/
-const location = require('./trip/tripRouter')
+const journey = require('./journey/journeyRouter')
+const waypoint = require('./waypoint/waypointRouter')
+
+router.use('/waypoint',waypoint)
+router.use('/journey',journey)
 
 /** 
-* Use all of the routes 
-*/
-router.use('/location',location)
+ * @name SanityCheck
+ * @path {GET} /api
+ * @code {200} Success
+ * @response {String} message=api_up
+ */
+router.get('/',(req,res,next)=>{
+    res.status(200).json({message:'api up'})
+})
 
 module.exports = router;

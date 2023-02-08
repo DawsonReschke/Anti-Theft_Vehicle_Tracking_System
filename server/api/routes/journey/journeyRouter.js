@@ -12,7 +12,7 @@ const router = express.Router();
  * Get a list of trips for a specific device.
  * 
  * @name GetTrips 
- * @path {GET} /api/journey/:deviceId
+ * @path {GET} /api/journeys/:deviceId
  * @query {String} :deviceId is the unique identifier for the device to get trips for.
  * @response {Object[]} trips List of trips for a given device_id
  * @response {String} trips[].trip_id Unique identifier for each trip

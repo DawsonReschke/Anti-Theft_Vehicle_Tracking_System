@@ -21,7 +21,7 @@ const router = express.Router();
  * Get the entire list of waypoints for a specific journey.
  *  
  * @name GetTrip
- * @path {GET} /api/journey/:tripId
+ * @path {GET} /api/waypoints/:tripId
  * @query {String} :tripId is the unique identifier for the trip.
  * @code {200} Success
  * @code {404} Not Found
@@ -85,7 +85,7 @@ const validateGpsData = ({isNew,time,latitude,longitude} = gpsData) =>{
  * Post a coordinate to be stored in the database with the device_id property set to :deviceId.
  * 
  * @name AddCoordinate
- * @path {POST} /api/waypoint/:deviceId
+ * @path {POST} /api/waypoints/:deviceId
  * @query {String} :deviceId is the unique identifier for the posting device 
  * @body {Boolean} isNew Does the coordinate mark a new trip
  * @body {Date} time Time that the coordinate was captured

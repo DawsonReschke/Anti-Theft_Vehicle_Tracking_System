@@ -7,8 +7,8 @@ const express = require('express');
 
 const router = express.Router(); 
 
-const journey = require('./journey/journeyRouter')
-const waypoint = require('./waypoint/waypointRouter')
+const journey = require('./journeys/journeyRouter')
+const waypoint = require('./waypoints/waypointRouter')
 
 router.use('/waypoint',waypoint)
 router.use('/journey',journey)

@@ -1,6 +1,6 @@
 // interfaces with the backend creating requests and formatting data to present in the HTML
-const GET_EXAMPLE_TRIPS = '/api/journey/example_1';
-const GET_TRIP = '/api/waypoint/';
+const GET_EXAMPLE_TRIPS = '/api/journeys/example_1';
+const GET_TRIP = '/api/waypoints/';
 const TARGET = 'trip_selector';
 
 /** 

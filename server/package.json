@@ -8,7 +8,8 @@
     "knex": "npx knex --knexfile config/knexfile.js",
     "migrate": "knex migrate:latest --knexfile config/knexfile.js",
     "rollback": "knex migrate:rollback --knexfile config/knexfile.js",
-    "seed": "knex seed:run --knexfile config/knexfile.js"
+    "seed": "knex seed:run --knexfile config/knexfile.js",
+    "document":"jsdoc -c ./jsdoc.conf"
   },
   "author": "",
   "license": "ISC",
@@ -17,5 +18,10 @@
     "express": "^4.18.2",
     "knex": "^2.4.2",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.0",
+    "jsdoc-http-plugin": "^0.3.2",
+    "jsdoc-route-plugin": "^0.1.0"
   }
 }

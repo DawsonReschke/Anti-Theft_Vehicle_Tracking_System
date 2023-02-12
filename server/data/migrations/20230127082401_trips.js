@@ -1,7 +1,3 @@
-/**
- * @param { import("knex").Knex } knex
- * @returns { Promise<void> }
- */
 exports.up = function(knex) {
     return knex.schema.createTable('trips',(t) => {
       t.increments('trip_id'); // trips will increment so we can find the most recent trip.
@@ -11,11 +7,7 @@ exports.up = function(knex) {
     })
   };
   
-  /**
-   * @param { import("knex").Knex } knex
-   * @returns { Promise<void> }
-   */
-  exports.down = function(knex) {
-    return knex.schema.raw("DROP TABLE trips CASCADE");
-  };
+exports.down = function(knex) {
+  return knex.schema.raw("DROP TABLE trips CASCADE");
+};
   

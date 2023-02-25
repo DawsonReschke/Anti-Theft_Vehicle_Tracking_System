@@ -9,7 +9,7 @@
     "migrate": "knex migrate:latest --knexfile config/knexfile.js",
     "rollback": "knex migrate:rollback --knexfile config/knexfile.js",
     "seed": "knex seed:run --knexfile config/knexfile.js",
-    "document":"jsdoc -c ./jsdoc.conf"
+    "document": "jsdoc -c ./jsdoc.conf"
   },
   "author": "",
   "license": "ISC",

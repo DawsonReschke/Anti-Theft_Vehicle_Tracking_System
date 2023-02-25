@@ -2,10 +2,15 @@ import logo from './logo.svg';
 import './App.css';
 import { useDispatch,useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import requestUserDevices from './api/DeviceAPI'
 
 function App() {
   let showState = useSelector(state=>state);
   useEffect(()=>{
+    async function a (){
+      console.log(await requestUserDevices())
+    }
+    a(); 
     console.log(showState); 
   },[])
   return (

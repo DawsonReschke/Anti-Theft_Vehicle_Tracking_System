@@ -1,9 +1,11 @@
+import axios from './AuthenticatedAxios'; 
+
 /** 
  * @module DeviceApi 
  * @description Module responsible for getting the list of devices for a specific user.
  * Implements auth0 using getTokenSilently (production) & getTokenWithPopup (development) 
 */
-const GET_DEVICE_URI = '/api/v1/devices'; 
+const GET_DEVICE_URI = 'http://localhost:1337/api/v1/devices'; 
 const CREATE_DEVICE_URI = '/api/v1/devices/new'; 
 
 /** 
@@ -25,15 +27,10 @@ const CREATE_DEVICE_URI = '/api/v1/devices/new';
 */
 async function requestUserDevices(token){
     try{
-        let response = await fetch(GET_DEVICE_URI,{
-            method: 'GET',
-            headers:{
-                'authorization':`Bearer ${token}`
-            }
-        })
-        return response.json(); 
+        let response = await axios.get(GET_DEVICE_URI)
+        return response.data 
     }catch(e){
-        return {status: e.response.status,message:e.response.message}
+        return {status: e.response.status,message:e.response.data.message}
     }
 }
 
@@ -56,3 +53,5 @@ async function createUserDevice(token,device){
         return {status:e.response.status,message:e.response.message}
     }
 }
+
+export default requestUserDevices;

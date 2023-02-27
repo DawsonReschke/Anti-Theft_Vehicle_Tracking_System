@@ -1,24 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import requestUserDevices from './api/DeviceAPI'
+import { authenticate,selectAuth,logout,login } from './redux/authReducer';
 
 function App() {
-  let showState = useSelector(state=>state);
+  const dispatch = useDispatch(); 
+  const isAuthenticated = useSelector(selectAuth)
   useEffect(()=>{
-    async function a (){
-      console.log(await requestUserDevices())
-    }
-    a(); 
-    console.log(showState); 
-  },[])
+    dispatch(authenticate())
+  },[dispatch])
+    
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
+          <br></br>
+          {isAuthenticated ? <button onClick={() => dispatch(logout())}>logout</button> : <button onClick={() => dispatch(login())}>login</button>}
         </p>
         <a
           className="App-link"
@@ -26,7 +26,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Learn Reacts
         </a>
       </header>
     </div>

@@ -1,5 +1,12 @@
+/** 
+ * @module authReducer
+ * @description all auth related redux thunks and reducers
+*/
+
 import { createReducer, createAsyncThunk } from '@reduxjs/toolkit'
+import { createMatcher } from './utils'
 import authClient from '../authClient'
+
 
 /** 
  * @typedef {Object} ActionMatcher 
@@ -9,6 +16,17 @@ import authClient from '../authClient'
  * @property {Function} reducer the reducer function to run if there is a match.
 */
 
+/** 
+ * @typedef {Function} SelectorFunction
+ * @description this type of function is passed into the `useSelector` hook from redux. 
+ * @example let authState = useSelector(selectAuth); each time you reference authState you will always receive the current authentication state. 
+ * @param {Object} state the current state of the application
+ * @returns a portion of the current state.  
+*/
+
+/** 
+ * Checks the user authentication state stores in state as (state.auth.isAuthenticated)  
+*/
 export const authenticate = createAsyncThunk(
     'authenticate',
     async(_,{getState}) => {
@@ -17,21 +35,28 @@ export const authenticate = createAsyncThunk(
     }
 )
 
+/** 
+ * @constant {SelectorFunction} selectAuth selects the isAuthenticated section of state
+ * @param {Object} state current State of the application 
+ * @returns {Boolean} the current user authentication state in the application. 
+*/
 export const selectAuth = state => state.auth.isAuthenticated
 
 
 /** 
- * @constant {ActionMatcher[]} authenticateMatchers  
+ * @constant {ActionMatcher[]} authenticateMatchers 
+ * @description matcher object array for reducing the Authenticated state after calling the `authenticate` thunk 
 */
+
 const authenticateMatchers = [
     {
-        matcher:authenticate.fulfilled,
-        reducer:(state,action)=>{
+        matcher: createMatcher(authenticate.fulfilled),
+        reducer: (state,action)=>{
             state.isAuthenticated = action.payload || false; 
         }
     },
     {
-        matcher:authenticate.rejected,
+        matcher:createMatcher(authenticate.rejected),
         reducer:(state,action)=>{
             state.error = action.payload || null;
         }
@@ -39,6 +64,9 @@ const authenticateMatchers = [
 ]
 
 
+/** 
+ * Logs in the user and updates the authentication state. 
+*/
 export const login = createAsyncThunk(
     'login',
     async () => {
@@ -48,22 +76,27 @@ export const login = createAsyncThunk(
 
 /** 
  * @constant {ActionMatcher[]} loginMatchers  
+ * @description matcher object array for reducing the Authenticated state after calling the `login` thunk 
 */
 const loginMatchers = [
     {
-        matcher:login.fulfilled,
+        matcher:createMatcher(login.fulfilled),
         reducer: (state,action)=>{
             state.isAuthenticated = action.payload || false;
         }
     },
     {
-        matcher:login.rejected,
+        matcher:createMatcher(login.rejected),
         reducer: (state,action)=>{
             state.error = action.payload || null;
         }
     }
 ]
 
+
+/** 
+ * Logs out the user and stores the authentication state. 
+*/
 export const logout = createAsyncThunk(
     'logout',
     async () => {
@@ -73,17 +106,18 @@ export const logout = createAsyncThunk(
 )
 
 /** 
- * @constant {ActionMatcher[]} logoutMatchers  
+ * @constant {ActionMatcher[]} logoutMatchers 
+ * @description matcher object array for reducing the Authenticated state after calling the `logout` thunk 
 */
 const logoutMatchers = [
     {
-        matcher:logout.fulfilled,
+        matcher:createMatcher(logout.fulfilled),
         reducer: (state,action)=>{
             state.isAuthenticated = action.payload || false;
         }
     },
     {
-        matcher:logout.rejected,
+        matcher:createMatcher(logout.rejected),
         reducer: (state,action)=>{
             state.error = action.payload || null;
         }
@@ -91,6 +125,9 @@ const logoutMatchers = [
 ]
 
 
+/** 
+ * Fetches and stores user data from auth0. (state.auth.user) 
+*/
 export const getUserData = createAsyncThunk(
     'getUserData',
     async () => {
@@ -98,14 +135,20 @@ export const getUserData = createAsyncThunk(
     }
 )
 
+/** 
+ * @constant {SelectorFunction} selectUserData returns the user section of state (state.auth.user)
+ * @param {Object} state current state of the application 
+ * @returns {Object} user data section of state 
+*/
 export const selectUserData = state => state.auth.userData;
 
 /** 
- * @constant {ActionMatcher[]} getUserDataMatchers  
+ * @constant {ActionMatcher[]} getUserDataMatchers 
+ * @description matcher object array for reducing the user state after calling the `getUserData` thunk 
 */
 const getUserDataMatchers = [
     {
-        matcher:getUserData.fulfilled,
+        matcher:createMatcher(getUserData.fulfilled),
         reducer:(state,action) => {
             if(action.payload instanceof Error){
                 state.error = action.payload
@@ -115,7 +158,7 @@ const getUserDataMatchers = [
         }
     },
     {
-        matcher:getUserData.rejected,
+        matcher:createMatcher(getUserData.rejected),
         reducer:(state,action) => {
             state.error = action.payload || null; 
         }
@@ -135,7 +178,7 @@ const initialState = {
 
 const reducer = createReducer(initialState,{
         setIsAuth:(state,action) => {
-            state.isAuthenticated = action.payload
+            state.isAuthenticated = action.payload || false; 
         },
         setUser:(state,action) => {
             state.client = action.payload

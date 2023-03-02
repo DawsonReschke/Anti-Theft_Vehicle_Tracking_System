@@ -58,7 +58,7 @@ const authenticateMatchers = [
     {
         matcher:createMatcher(authenticate.rejected),
         reducer:(state,action)=>{
-            state.error = action.payload || null;
+            state.error = 'The user could not be authenticated...'
         }
     },
 ]
@@ -88,7 +88,7 @@ const loginMatchers = [
     {
         matcher:createMatcher(login.rejected),
         reducer: (state,action)=>{
-            state.error = action.payload || null;
+            state.error = 'The user could not be logged in... Try again later.'
         }
     }
 ]
@@ -100,7 +100,6 @@ const loginMatchers = [
 export const logout = createAsyncThunk(
     'logout',
     async () => {
-        console.log('logout thunk')
         return await authClient.logout(); 
     }
 )
@@ -119,7 +118,7 @@ const logoutMatchers = [
     {
         matcher:createMatcher(logout.rejected),
         reducer: (state,action)=>{
-            state.error = action.payload || null;
+            state.error = 'The user could not be logged out... Try again later'
         }
     }
 ]
@@ -150,17 +149,13 @@ const getUserDataMatchers = [
     {
         matcher:createMatcher(getUserData.fulfilled),
         reducer:(state,action) => {
-            if(action.payload instanceof Error){
-                state.error = action.payload
-            }else{
-                state.user = action.payload || null; 
-            }
+            state.user = action.payload || null; 
         }
     },
     {
         matcher:createMatcher(getUserData.rejected),
         reducer:(state,action) => {
-            state.error = action.payload || null; 
+            state.error = 'Could not fetch user data...' 
         }
     },
 ]

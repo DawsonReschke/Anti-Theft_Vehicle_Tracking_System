@@ -21,14 +21,11 @@ import authClient from '../authClient'
 */
 export const getDevices = createAsyncThunk(
     'getDevices',
-    async () => {
-        try {
-            return await authClient.createAuthenticatedRequest({
-                url:'/journey'
-            })
-        } catch (e) {
-            return new Error('Could not fetch user devices.')
-        }
+    async () => { 
+        let res = await authClient.createAuthenticatedRequest({
+            url:'/journeys/example_1'
+        })
+        return res.data; 
     }
 )
 
@@ -36,38 +33,25 @@ const getDeviceMatchers = [
     {
         matcher:createMatcher(getDevices.fulfilled),
         reducer: (state,action) => {
-            if(action.payload instanceof Error){
-                state.error = action.payload; 
-            }else{
-                state.availableDevices = action?.payload?.devices || []; 
-            }
+            state.availableDevices = action.payload || null; 
         }
     },
     {
         matcher:createMatcher(getDevices.rejected),
         reducer: (state,action) => {
-            if(action.payload instanceof Error){
-                state.error = action.payload; 
-            }else{
-                state.error = action?.payload || null; 
-            }
+            state.error = 'Could not retrieve a list of user devices... Try again later.'
         }
     }
 ]
 
 export const createDevice = createAsyncThunk(
     'createDevice',
-    async (device_name) => { 
-        try {
-            return await authClient.createAuthenticatedRequest({
-                url:'/devices',
-                data:{
-                    device_name
-                }
-            })
-        } catch (e) {
-            return new Error(`Could not create a new device with name: ${device_name}.`)
-        }
+    async (device_name) => {
+        let res =  await authClient.createAuthenticatedRequest({
+            url:'/devices',
+            data:{device_name}
+        }) 
+        return res.data; 
     }
 )
 
@@ -80,6 +64,7 @@ export const createDevice = createAsyncThunk(
 const initialState = {
     currentDevice: {}, 
     availableDevices:[],
+    error:null,
 }
 
 const reducer = createReducer(initialState,
@@ -93,6 +78,9 @@ const reducer = createReducer(initialState,
         },
         setSelectedDevice: (state,action) =>{
             state.currentDevice = action.payload
+        },
+        setError: (state,action) =>{
+            state.error = action.payload || null; 
         }
     },
     [

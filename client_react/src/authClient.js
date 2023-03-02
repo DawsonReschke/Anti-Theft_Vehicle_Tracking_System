@@ -91,7 +91,7 @@ class Client {
             await this.getClient().loginWithRedirect();
             return true;
         }catch(e){
-            return false; 
+            throw new Error('The user could not be logged in... Try again later.') 
         }
     }
     
@@ -101,13 +101,8 @@ class Client {
      * @returns {Promise<Boolean | Error>} false if the user was logged out, Error if the user could not be logged out.  
     */
     async logout(){
-        console.log('logging out')
-        try{
-            await this.getClient().logout(logoutConfig);
-            return false; 
-        }catch(e){
-            return await this.isAuthenticated() ? new Error('Sorry you could not be logged out...') : false; 
-        }
+        await this.getClient().logout(logoutConfig);
+        return await this.isAuthenticated();     
     }
 
     /** 
@@ -116,12 +111,8 @@ class Client {
      * @returns {Promise<Object | Error>} the object containing the user data, or an error if the user data could not be resolved.  
     */
     async getUser(){
-        if(!await this.isAuthenticated()) return new Error('The user could not be authenticated.')
-        try {
+        if(!await this.isAuthenticated()) throw new Error('The user could not be authenticated.')
             return await this.getClient().getUser(); 
-        } catch (e) {
-            return new Error('Could not resolve user data.')
-        }
     }
 
     /** 
@@ -140,7 +131,7 @@ class Client {
                 }
             })
         } 
-        return await this.axios.request(requestConfig); 
+        return (await this.axios.request(requestConfig))
     }
 }
 

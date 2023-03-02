@@ -69,7 +69,8 @@ class Client {
     /** 
      * @method getAccessToken
      * @description If the user is logged in, returns the cached access token or gets a new one using the Auth0Client
-     * @returns {Promise<String | Error>} the access token or an error if the user was not logged in.   
+     * @returns {Promise<String>} the access token. 
+     * @throws {Error} if the user is not authenticated or there is an error when fetching the access token throws an error
     */
     async getAccessToken(){ 
         if(!await this.isAuthenticated()) throw new Error('The user could not be authenticated.'); 
@@ -84,6 +85,7 @@ class Client {
      * @method login
      * @description redirects the user to a sign in page (Auth0)
      * @return {Promise<Boolean>} was the login successful  
+     * @throws {Error} if the user login failed throws an error. 
     */
     async login(){
         if(await this.isAuthenticated()) return true; 
@@ -98,7 +100,7 @@ class Client {
     /** 
      * @method logout
      * @description logout the current user
-     * @returns {Promise<Boolean | Error>} false if the user was logged out, Error if the user could not be logged out.  
+     * @returns {Promise<Boolean>} false if the user was logged out  
     */
     async logout(){
         await this.getClient().logout(logoutConfig);
@@ -108,7 +110,8 @@ class Client {
     /** 
      * @method getUser
      * @description fetches the user data associated with their social provider (email, name, profile_image, etc)  
-     * @returns {Promise<Object | Error>} the object containing the user data, or an error if the user data could not be resolved.  
+     * @returns {Promise<Object>} the object containing the user data.
+     * @throws {Error} if the user data could not be fetched.  
     */
     async getUser(){
         if(!await this.isAuthenticated()) throw new Error('The user could not be authenticated.')

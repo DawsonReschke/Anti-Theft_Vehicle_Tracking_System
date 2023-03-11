@@ -3,44 +3,107 @@
  * @module models/journey
  */
 
+const deviceModel = require('../device/deviceModel');
 const db = require('../../../data/db-config')
 
 /** 
- * 
- * @function getTripsByDeviceId
- * @description gets a list of of trips for a given device_id
- * @param {String} device_id Unique identifier for the device
- * @returns {Promse} Resolves to an array where each object contains a trip_id, start_time, and end_time
- */
-
-/** 
- *@todo get a list of journeys for a given device_id
- *
-*/ 
-async function getJourneysByDevice(device_id){
-    throw new Error('get a list of journeys for a given device_id not implemented yet')
-    return db('trips').select('trip_id','start_time','end_time').where('device_id',device_id)
+ * @function validateJourneyOwnership
+ * @description returns the journey if the user owns the device associated with the journey
+ * @param {Object} token - the user's token
+ * @param {String} token.sub - the user id
+ * @param {String} journey_id - the journey id
+ * @returns {Promise<Object>} the journey | rejects if the user does not own the device or the journey does not exist 
+*/
+async function validateJourneyOwnership(token,journey_id){
+    try{
+        let journey = await db('journeys').where({journey_id}).first(); 
+        if(!journey) throw new Error('You do not have access to this device')
+        let {device_id} = journey;
+        await deviceModel.validateDeviceOwnerShip(token,device_id); // rejects if the device does not exist or if the user does not have access to the device
+        return journey; 
+    }catch(e){
+        throw new Error('You do not have access to this device');
+    }
 }
 
 /** 
- *@todo label a journey
- *
-*/ 
-
-async function labelJourney(journey_id,label){
-    throw new Error('label a journey not implemented yet')
+ * @function getJourneysByDevice
+ * @description returns a list of journeys for a given device_id
+ * @param {Object} token - the user token
+ * @param {String} token.sub - the user id 
+ * @param {string} device_id - the device_id of the journey
+ * @returns {Promise<Array>} - a list of journeys for a given device_id | rejects if the user does not have access to the device
+*/
+async function getJourneysByDevice(token,device_id){
+    try{
+        await deviceModel.validateDeviceOwnerShip(token,device_id); // rejects if the device does not exist or if the user does not have access to the device
+        return db('journeys').where({device_id});
+    }catch(e){
+        throw new Error('You do not have access to this device');
+    }
 }
 
 /** 
- *@todo delete a journey
- *
-*/ 
-async function deleteJourney(journey_id){
-    throw new Error('delete a journey not implemented yet')
+ * @function createJourney
+ * @description creates a new journey in the database
+ * @param {String} device_id
+ * @param {String} label
+ * @returns {Promise<Object>} - the newly created journey
+*/
+async function createJourney(device_id,label){
+    try{
+        await deviceModel.validateDeviceId(device_id);
+        return db('journeys').insert({device_id,label: label || 'default'});
+    }catch(e){
+        throw new Error('You do not have access to this device');
+    }
+}
+
+/** 
+ * @function labelJourney
+ * @description updates the label of a journey
+ * @param {Object} token - the user token
+ * @param {String} token.sub - the user id 
+ * @param {string} journey_id - the id of the journey to label 
+ * @param {string} label - the new label of the journey
+ * @returns {Promise<Object>} - the updated journey | rejects if the user does not have access to the device or if the journey does not exist
+*/
+async function labelJourney(token,journey_id,label){
+    try{
+        let journey = await db('journeys').where({journey_id})
+        let device_id = await journey.first().device_id; 
+        if(!device_id) throw new Error('You do not have access to this device');
+        await deviceModel.validateDeviceOwnerShip(token,device_id); 
+        return journey.update({label});
+    }catch(e){
+        throw new Error('You do not have access to this device');
+    }
+}
+
+/** 
+ * @function deleteJourney
+ * @description deletes a journey from the database
+ * @param {Object} token - the user token
+ * @param {String} token.sub - the user id 
+ * @param {string} journey_id - the id of the journey to delete
+ * @returns {Promise<Object>} - the deleted journey | rejects if the user does not have access to the device or if the journey does not exist 
+*/
+async function deleteJourney(token,journey_id){
+    try{
+        let journey = await db('journeys').where({journey_id})
+        let device_id = await journey.first().device_id; 
+        if(!device_id) throw new Error('You do not have access to this device');
+        await deviceModel.validateDeviceOwnerShip(token,device_id); 
+        return journey.del();
+    }catch(e){
+        throw new Error('You do not have access to this device');
+    }
 }
 
 module.exports = {
+    validateJourneyOwnership,
     getJourneysByDevice,
+    createJourney,
     labelJourney,
     deleteJourney,
 }

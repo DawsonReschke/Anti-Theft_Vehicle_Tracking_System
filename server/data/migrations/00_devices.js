@@ -11,6 +11,8 @@ exports.up = function(knex) {
         t.string('device_secret',12)
             .notNullable()
             .unique()
+        t.string('device_name',64)
+            .defaultTo('New Device')
       })
 };
 

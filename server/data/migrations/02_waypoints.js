@@ -9,7 +9,6 @@ exports.up = function(knex) {
       t.integer('journey_id')
       .notNullable()
       .unsigned()
-      .notNullable()
       .references('journey_id')
       .inTable('journeys')
       .onDelete('CASCADE')

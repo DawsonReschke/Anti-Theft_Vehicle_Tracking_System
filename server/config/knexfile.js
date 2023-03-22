@@ -2,7 +2,7 @@ require('dotenv').config('../.env')
 
 let connection = process.env.PG_CONNECTION_STRING || {
   host:'127.0.0.1',
-  port:'49155',
+  port:'49153',
   user:'postgres',
   password:'postgrespw',
 }

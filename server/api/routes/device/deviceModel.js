@@ -1,5 +1,5 @@
 const db = require('../../../data/db-config')
-
+var crypto = require('crypto')
 /** 
  * @function validateDeviceOwnerShip 
  * @description returns a device if the user owns it
@@ -46,7 +46,7 @@ async function validateDeviceId(device_id){
  * @returns {Promise<Array>} - array of devices 
 */
 async function getDevices(token){
-    return db('devices').where({user_id: token.sub});
+    return db('devices').where({user_id:token.sub});
 }
 
 /** 
@@ -57,6 +57,7 @@ async function getDevices(token){
  * @param {String} device.name - device name
  * @returns {Promise<Object>} - device | rejects if a device already exists with the same name (under that user)
 */
+
 async function createDevice(token, device_name){
     let alreadyExists = await db('devices').where({user_id: token.sub, device_name}).first();
     if(alreadyExists) throw new Error('A device with that name already exists');
@@ -71,13 +72,44 @@ async function createDevice(token, device_name){
  * @param {String} deviceId - device id
  * @returns {Promise<Object>} - device | rejects if the device does not exist or if the user does not own it 
 */
-async function resetDeviceSecret(token, deviceId){
-    let updated = await db('devices').where({user_id: token.sub, device_id: deviceId}).update({device_secret:crypto.randomBytes(8).toString('hex')}); 
-    if(!updated) throw new Error('You do not have access to this device');
+async function resetDeviceSecret(token, device_id){
+    let updated = await db('devices').where({user_id: token.sub, device_id}).update({device_secret:crypto.randomBytes(6).toString('hex')}).returning('*'); 
+    if(!updated.length) throw new Error('You do not have access to this device');
     return updated;
 }
 
+/** 
+ * @function deleteDevice
+ * @description deletes a device from the database
+ * @param {Object} token - user token
+ * @param {String} token.sub - user id
+ * @param {String} device_id
+ * @returns {Promise<Object>} - device | rejects if the device does not exist or if the user does not own it  
+*/
+async function deleteDevice(token,device_id){
+    let deleted = await db('devices').where({device_id,user_id:token.sub}).del();
+    if(!deleted) throw new Error('You do not have access to this device');
+    return deleted;
+}
 
+/** 
+ * @function renameDevice
+ * @description renames a device in the database
+ * @param {Object} token - user token
+ * @param {String} token.sub - user id
+ * @param {String} device_id
+ * @param {String} device_name
+ * @returns {Promise<Object>} - device | rejects if the device does not exist, if a device already exists with the same
+ *  name, or if the user does not own it   
+*/
+
+async function renameDevice(token,device_id,device_name){
+    let alreadyExists = await db('devices').where({user_id: token.sub, device_name}).first();
+    if(alreadyExists) throw new Error('A device with that name already exists'); // * throws 4
+    let renamedDevice = await db('devices').where({device_id,user_id:token.sub}).update({device_name});
+    if(!renamedDevice) throw new Error('You do not have access to this device');
+    return renamedDevice;
+}
 
 
 module.exports = {
@@ -86,5 +118,7 @@ module.exports = {
     validateDeviceId,
     getDevices,
     createDevice,
-    resetDeviceSecret
+    resetDeviceSecret,
+    deleteDevice,
+    renameDevice,
 }

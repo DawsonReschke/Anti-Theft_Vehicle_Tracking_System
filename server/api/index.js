@@ -10,8 +10,8 @@ const notFound = require('./middlewares/notFoundMiddleWare');
 const errorHandler = require('./middlewares/errorHandlerMiddleWare');
 
 const app = express(); 
-
-app.use(express.text({type(req){return true}}))
+app.use(express.json());
+// app.use(express.text({type(req){return true}}))
 app.use('/api',routes);
 
 
@@ -23,7 +23,6 @@ app.use('/api',routes);
  * @response Load Static Files
  */
 app.use('/',express.static(path.join(__dirname,'../../client/dist')))
-
 app.use(errorHandler);
 app.use(notFound);
 

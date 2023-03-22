@@ -70,12 +70,17 @@ async function createJourney(device_id,label){
 */
 async function labelJourney(token,journey_id,label){
     try{
-        let journey = await db('journeys').where({journey_id})
-        let device_id = await journey.first().device_id; 
-        if(!device_id) throw new Error('You do not have access to this device');
-        await deviceModel.validateDeviceOwnerShip(token,device_id); 
-        return journey.update({label});
+        let updatedJourney = await db('journeys')
+            .join('devices','journeys.device_id','=','devices.device_id')
+            // .join('devices',{'journeys.device_id':'devices.device_id'})
+            // .where({journey_id})
+            // .update({label: label || 'default'})
+            // .returning('*');
+            console.log('herr',updatedJourney)
+            if(!updatedJourney.length) throw new Error('You do not have access to this device')
+            return updatedJourney;
     }catch(e){
+        console.log(e)
         throw new Error('You do not have access to this device');
     }
 }
@@ -90,6 +95,9 @@ async function labelJourney(token,journey_id,label){
 */
 async function deleteJourney(token,journey_id){
     try{
+        let deletedJourney = await db('journeys')
+            .join('devices','journeys.device_id','devices.device_id')
+            .where({journey_id})
         let journey = await db('journeys').where({journey_id})
         let device_id = await journey.first().device_id; 
         if(!device_id) throw new Error('You do not have access to this device');

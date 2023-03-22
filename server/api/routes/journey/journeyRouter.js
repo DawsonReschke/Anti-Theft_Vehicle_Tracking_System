@@ -4,51 +4,67 @@
  */
 
 const express = require('express'); 
-const model = require('./journeyModel')
+const journeyRouter = require('./journeyModel')
 
 const router = express.Router(); 
 
-/** 
- * Get a list of trips for a specific device.
- * 
- * @name GetTrips 
- * @path {GET} /api/journeys/:deviceId
- * @query {String} :deviceId is the unique identifier for the device to get trips for.
- * @response {Object[]} trips List of trips for a given device_id
- * @response {String} trips[].trip_id Unique identifier for each trip
- * @response {Date} trips[].start_time Time when the trip was started
- * @response {Date} trips[].end_time Time when the trip was ended
- */
 
 /** 
- *@todo get all trips for a device
- *
-*/ 
-router.get('/:deviceId',async(req,res,next) => {
-    throw new Error('get all trips for a device not implemented yet')
-    const deviceId = req.params.deviceId; 
-    let trips = await model.getTripsByDeviceId(deviceId); 
-    if(!trips.length) return next({
-            status:404,
-            message:`There are no trips recorded for device: ${deviceId}`
-        })
-    res.json({trips})
+ * GET /api/journeys/:device_id
+ * @summary Get all journeys for a specific device
+ * @security BearerAuth
+ * @param {String} device_id.path.required
+ * @returns {Array<Object>} 200 - OK - application/json - list of journeys
+ * @returns {Object} 403 - Forbidden - application/json
+*/
+router.get('/:device_id',async (req,res,next) => {
+    const {device_id} = req.params
+    const token = req.body; // !change to req.headers.authorization
+    try{
+        let journeys = await journeyRouter.getJourneysByDevice(token,device_id);
+        res.json(journeys)
+    }catch(e){
+        next({status:403,message:e.message})
+    }
 })
 
 /** 
- *@todo allow user to label a journey
- *
-*/ 
-router.put('/:journeyId',async(req,res,next) => {
-    throw new Error('allow user to label a journey not implemented yet')
+ * PUT /api/journeys/:device_id
+ * @summary Update a journey label in the database
+ * @security BearerAuth
+ * @param {String} label.body.required - label of the journey
+ * @returns {Object} 200 - OK - application/json - updated journey
+ * @returns {Object} 403 - Forbidden - application/json
+*/
+router.put('/:journey_id',async(req,res,next) => {
+    const token = req.body; //! change to req.headers.authorization
+    const {label} = req.body;
+    const {journey_id} = req.params
+    try{
+        let journey = await journeyRouter.labelJourney(token,journey_id,label);
+        res.json(journey)
+    }catch(e){
+        next({status:403,message:e.message})
+    }
 })
 
 /** 
- *@todo delete a journey
- *
-*/ 
-router.delete('/:journeyId',async(req,res,next) => {
-    throw new Error('delete a journey not implemented yet')
+ * DELETE /api/journeys/:journey_id
+ * @summary delete a journey from the database
+ * @security BearerAuth
+ * @param {String} journey_id.path.required - id of the journey to be deleted 
+ * @returns {Object} 200 - OK - application/json - deleted journey
+ * @returns {Object} 403 - Forbidden - application/json
+*/
+router.delete('/:journey_id',async(req,res,next) => {
+    const {journey_id} = req.params;
+    const token = req.body; //! change to req.headers.authorization
+    try{
+        let journey = await journeyRouter.deleteJourney(token,journey_id);
+        res.json(journey)
+    }catch(e){
+        next({status:403,message:e.message})
+    }
 })
 
 module.exports = router;

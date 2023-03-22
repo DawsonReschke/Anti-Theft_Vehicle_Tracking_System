@@ -29,14 +29,14 @@ router.get('/:device_id',async (req,res,next) => {
 })
 
 /** 
- * PUT /api/journeys/:device_id
+ * PUT /api/journeys/label/:journey_id
  * @summary Update a journey label in the database
  * @security BearerAuth
  * @param {String} label.body.required - label of the journey
  * @returns {Object} 200 - OK - application/json - updated journey
  * @returns {Object} 403 - Forbidden - application/json
 */
-router.put('/:journey_id',async(req,res,next) => {
+router.put('/label/:journey_id',async(req,res,next) => {
     const token = req.body; //! change to req.headers.authorization
     const {label} = req.body;
     const {journey_id} = req.params
@@ -56,7 +56,7 @@ router.put('/:journey_id',async(req,res,next) => {
  * @returns {Object} 200 - OK - application/json - deleted journey
  * @returns {Object} 403 - Forbidden - application/json
 */
-router.delete('/:journey_id',async(req,res,next) => {
+router.delete('/delete/:journey_id',async(req,res,next) => {
     const {journey_id} = req.params;
     const token = req.body; //! change to req.headers.authorization
     try{

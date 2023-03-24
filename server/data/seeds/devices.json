@@ -1,7 +1,7 @@
 {
     "devices":[
-        {"device_id": 1, "user_id": "google-oauth2|107796556002314357574", "device_secret": "dd4e214eac3f","device_name":"Workmobile"},
-        {"device_id": 2, "user_id": "auth0|5457edea1b8f22891a000003", "device_secret": "a467a0864504","device_name":"Ford Focus"},
-        {"device_id": 3, "user_id": "auth0|5457edea1b8f22891a000002", "device_secret": "c76d73b66752","device_name":"pickup"}
+        {"device_id": -1, "user_id": "google-oauth2|107796556002314357574", "device_secret": "dd4e214eac3f","device_name":"Workmobile"},
+        {"device_id": -2, "user_id": "auth0|5457edea1b8f22891a000003", "device_secret": "a467a0864504","device_name":"Ford Focus"},
+        {"device_id": -3, "user_id": "auth0|5457edea1b8f22891a000002", "device_secret": "c76d73b66752","device_name":"pickup"}
     ]
 }

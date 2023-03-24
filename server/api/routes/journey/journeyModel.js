@@ -70,8 +70,11 @@ async function createJourney(device_id,label){
 */
 async function labelJourney(token,journey_id,label){
     try{
-        let updatedJourney = await db('journeys')
-            .join('devices','journeys.device_id','=','devices.device_id')
+        let updatedJourney = await db('journeys as j')
+            .join('devices as d','j.device_id','d.device_id')
+            .where({user_id:token.sub,journey_id})
+            .select('j')
+            .update({label})
             // .join('devices',{'journeys.device_id':'devices.device_id'})
             // .where({journey_id})
             // .update({label: label || 'default'})

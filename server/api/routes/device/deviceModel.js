@@ -61,7 +61,7 @@ async function getDevices(token){
 async function createDevice(token, device_name){
     let alreadyExists = await db('devices').where({user_id: token.sub, device_name}).first();
     if(alreadyExists) throw new Error('A device with that name already exists');
-    return db('devices').insert({user_id: token.sub, device_name,device_secret:crypto.randomBytes(8).toString('hex')}); 
+    return db('devices').insert({user_id: token.sub, device_name,device_secret:crypto.randomBytes(6).toString('hex')}).returning('*'); 
 }
 
 /** 

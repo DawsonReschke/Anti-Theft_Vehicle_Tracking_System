@@ -7,12 +7,12 @@ exports.up = function(knex) {
         t.increments('device_id'); 
         t.string('user_id')
             .notNullable()
-            .unique();
         t.string('device_secret',12)
             .notNullable()
             .unique()
         t.string('device_name',64)
             .defaultTo('New Device')
+            .unique();
       })
 };
 
